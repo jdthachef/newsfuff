@@ -75,8 +75,15 @@ dx_pkg() {
 	sudo apt-get install fail2ban unattended-upgrades ufw python3 python3-pip -y &&
 	sudo apt-get install ufw tmux git curl zsh ncdu -y &&
 	sudo apt-get install libvirt-daemon libvirt-daemon-config-network libvirt-daemon-driver-vbox -y &&
-	sudo apt-get install cockpit-ws cockpit-tests cockpit-system cockpit-storaged cockpit-pcp cockpit-packagekit cockpit-networkmanager cockpit-machines cockpit-bridge cockpit-389-ds cockpit -y &&
-	clear
+	sudo apt-get install -y qemu-kvm libvirt-daemon-system
+        sudo adduser john libvirt
+        sudo adduser john kvm
+        sudo systemctl enable --now libvirtd
+        sudo apt-get install cockpit-ws cockpit-tests cockpit-system cockpit-storaged cockpit-pcp cockpit-packagekit cockpit-networkmanager cockpit-machines cockpit-bridge cockpit-389-ds cockpit -y &&
+	sudo mkdir -vp /var/lib/libvirt/images/hassos-vm && cd /var/lib/libvirt/images/hassos-vm
+        sudo wget https://github.com/home-assistant/operating-system/releases/download/6.6/haos_ova-6.6.qcow2.xz
+        virsh pool-create-as --name hassos --type dir --target /var/lib/libvirt/images/hassos-vm
+        clear
 	echo 'INSTALLING DOCKER'
 	curl -fsSL https://get.docker.com -o get-docker.sh
 	sudo sh get-docker.sh &&
