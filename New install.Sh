@@ -92,7 +92,7 @@ dx_pkg() {
 	sleep 2s &&
 	sudo apt-get install tasksel -y &&
 	sudo apt-get install autoconf-archive wget -y
-	sudo tasksel install lubuntu-desktop &&
+	sudo tasksel install kde-desktop &&
 	echo 'DONE';
 	sleep 2s &&
 	sudo systemctl set-default graphical.target &&
@@ -112,10 +112,17 @@ dx_ufw() {
 
 dx_opr() {
 	sudo useradd -m opr;
+        sudo apt install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils ovmf
+        sudo adduser john libvirt
+        sudo adduser john kvm
+        sudo mkdir -vp /var/lib/libvirt/images/hassos-vm && cd /var/lib/libvirt/images/hassos-vm
+        sudo wget https://github.com/home-assistant/operating-system/releases/download/6.6/haos_ova
+        sudo virsh pool-create-as --name hassos --type dir --target /var/lib/libvirt/images/hassos-vm
 
 	sudo usermod -aG sudo opr;
 	sudo mkdir /home/opr/.ssh &&
 	sudo chmod 700 /home/opr/.ssh &&
+        sudo mkdir -vp /var/lib/libvirt/images/hassos-vm && cd /var/lib/libvirt/images/hassos-vm
 
 	if [ ! -f /home/opr/.ssh/authorized_keys ];
 	then
