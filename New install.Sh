@@ -76,7 +76,9 @@ dx_pkg() {
 	sudo apt-get install ufw tmux git curl zsh ncdu -y &&
 	sudo apt-get install libvirt-daemon libvirt-daemon-config-network libvirt-daemon-driver-vbox -y &&
 	sudo apt-get install -y qemu-kvm libvirt-daemon-system
-        sudo adduser john libvirt
+        sudo adduser john libvirt 
+        sudo wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo apt install ./google-chrome-stable_current_amd64.deb
         sudo adduser john kvm
         sudo systemctl enable --now libvirtd
         sudo apt-get install cockpit-ws cockpit-tests cockpit-system cockpit-storaged cockpit-pcp cockpit-packagekit cockpit-networkmanager cockpit-machines cockpit-bridge cockpit-389-ds cockpit -y &&
