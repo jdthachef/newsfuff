@@ -92,8 +92,9 @@ dx_pkg() {
 	sleep 2s &&
 	sudo apt-get install tasksel -y &&
 	sudo apt-get install autoconf-archive wget -y
-	sudo tasksel install kde-desktop &&
-	echo 'DONE';
+	sudo apt install kde-plasma-desktop &&
+	sudo apt install plasma-workspace-wayland &&
+        echo 'DONE';
 	sleep 2s &&
 	sudo systemctl set-default graphical.target &&
 	clear
