@@ -81,17 +81,12 @@ dx_pkg() {
         sudo systemctl enable --now libvirtd
         sudo apt-get install cockpit-ws cockpit-tests cockpit-system cockpit-storaged cockpit-pcp cockpit-packagekit cockpit-networkmanager cockpit-machines cockpit-bridge cockpit-389-ds cockpit -y &&
         clear
-	echo 'INSTALLING DOCKER'
-	curl -fsSL https://get.docker.com -o get-docker.sh
-	sudo sh get-docker.sh &&
-	echo 'DONE';
-	sleep 2s &&
-	clear
 	sleep 1s;
 	echo 'INSTALLING GRAPHICAL DESKTOP ENVIRONMENT...' &&
 	sleep 2s &&
 	sudo apt-get install tasksel -y &&
 	sudo apt-get install autoconf-archive wget -y
+        sudo apt-get install sddm &&
 	sudo apt install kde-plasma-desktop &&
 	sudo apt install plasma-workspace-wayland &&
         echo 'DONE';
@@ -119,13 +114,12 @@ dx_opr() {
         sudo mkdir -vp /var/lib/libvirt/images/hassos-vm && cd /var/lib/libvirt/images/hassos-vm
         sudo wget https://github.com/home-assistant/operating-system/releases/download/6.6/haos_ova
         sudo virsh pool-create-as --name hassos --type dir --target /var/lib/libvirt/images/hassos-vm
-
+        sudo mkdir -vp /var/lib/libvirt/images/hassos-vm && cd /var/lib/libvirt/images/hassos-vm
+        sudo wget https://github.com/home-assistant/operating-system/releases/download/6.6/haos_ova
 	sudo usermod -aG sudo opr;
 	sudo mkdir /home/opr/.ssh &&
 	sudo chmod 700 /home/opr/.ssh &&
-        sudo mkdir -vp /var/lib/libvirt/images/hassos-vm && cd /var/lib/libvirt/images/hassos-vm
-
-	if [ ! -f /home/opr/.ssh/authorized_keys ];
+        if [ ! -f /home/opr/.ssh/authorized_keys ];
 	then
 		touch /home/opr/.ssh/authorized_keys;
 	fi
@@ -135,20 +129,12 @@ dx_opr() {
 	sudo chown -R opr:opr /home/opr;
 	clear &&
 	sleep 2s;
-
-	echo 'Enter a new password for System Operator account (opr)...'
-	sleep 1s &&
-	echo ' '
-	sudo passwd opr &&
-	echo 'REISTERED'
-	clear &&
-	sleep 2s;
-
-	echo 'Enter new root password (root)...'
-	sleep 1s &&
-	echo ' '
-	sudo passwd root &&
-	echo 'REGISTERED'
+        echo 'INSTALLING DOCKER'
+	curl -fsSL https://get.docker.com -o get-docker.sh
+	sudo sh get-docker.sh &&
+	echo 'DONE';
+	sleep 2s &&
+	clear
 }
 
 dx_services() {
