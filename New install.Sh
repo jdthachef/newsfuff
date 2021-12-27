@@ -87,7 +87,7 @@ dx_pkg() {
 	sudo apt-get install tasksel -y &&
 	sudo apt-get install autoconf-archive wget -y
         sudo apt-get install sddm &&
-	sudo apt install kde-plasma-desktop &&
+	sudo apt install kde-full &&
 	sudo apt install plasma-workspace-wayland &&
         echo 'DONE';
 	sleep 2s &&
