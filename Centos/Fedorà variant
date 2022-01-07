@@ -1,74 +1,30 @@
 
 #!/bin/bash
 
-Clear
-Echo ‘---Bootstrap Script for JC Server---’
-Sleep 3s
-Echo ‘’
-Echo ‘’
-Echo ‘’
-Echo ‘Occaisonal user input will be required – mostly your password as no sudoloop.’
-Sleep 3s
-Echo ‘|’
-Sleep 0.1s
-Echo ‘\’
-Sleep 0.1s
-Echo ‘ |’
-Sleep 0.1s
-Echo ‘ \’
-Sleep 0.1s
-Echo ‘  |’
-Sleep 0.1s
-Echo ‘  \’
-Sleep 0.1s
-Echo ‘   |’
-Sleep 0.1s
-Echo ‘   \’
-Sleep 0.1s
-Echo ‘    |’
-Sleep 0.1s
-Echo ‘    V’
-Sleep 0.6s
-Read -n 1 -s -r -p ‘    Press any key to continue…’ &&
-Clear
 
-Dx_update() {
-	Clear
-	Echo ‘-------------------------------------------’
-        Echo ‘SYNCING REPOSITORIES AND UPDATING SYSTEM…’ &&
-        Sleep 2s;
+
 
         Sudo yum update
         Sudo yum full-upgrade -y
         Sudo yum dist-upgrade -y
         Bincnt=$(ls -1 /usr/bin | wc -l)
-        Echo ‘ ‘
-        Echo ‘ ‘
-        Echo ‘PLEASE WAIT…’
-}
-
-Dx_locale() {
-	Clear
-	Echo ‘--------------------------’
-	Echo ‘SETTING LOCALE AND VCONSOLE’
-	Sleep 2s;
+        
 
 	#sudo echo ‘LANG=”en_US.UTF-8”
 	#LC_MESSAGES=”C”
 	#LC_ALL=”en_US.UTF-8”’ >> /etc/environment
 
-	#echo ‘LANG=”en_US.UTF-8”’
+	‘LANG=”en_US.UTF-8”’
 	#LC_MESSAGES=”C”
 	#LC_ALL=”en_US.UTF-8”’ | sudo tee -a /etc/environment
 
-	#echo “After reboot, use ‘locale’ to check”
+	“After reboot, use ‘locale’ to check”
 	Sudo cp -r /etc/ssh/sshd_config /etc/ssh/sshd_config.bak_original
 }
 
 
 Dx_pkg() {
 	Clear
-	Echo ‘----------------------------’
 	Echo ‘INSTALLING REQUIRED PACKAGES’
 	Sleep 2s
 	Sudo yum install toilet -y
@@ -81,8 +37,6 @@ Dx_pkg() {
         Sudo systemctl enable –now libvirtd
         Sudo yum install cockpit-ws cockpit-tests cockpit-system cockpit-storaged cockpit-pcp cockpit-packagekit cockpit-networkmanager cockpit-machines cockpit-bridge cockpit-389-ds cockpit -y &&
         Clear
-	Sleep 1s;
-	Echo ‘INSTALLING GRAPHICAL DESKTOP ENVIRONMENT…’ &&
 	Sleep 2s &&
 	Sudo yum install tasksel -y &&
 	Sudo yum install autoconf-archive wget -y
@@ -97,8 +51,6 @@ Dx_pkg() {
 
 Dx_ufw() {
 	Clear
-	Echo ‘-----------------------------;
-	Echo ‘
 	Sudo ufw allow OpenSSH
 	Sudo ufw allow http
 	Sudo ufw allow https
@@ -132,7 +84,6 @@ Dx_opr() {
         Echo ‘INSTALLING DOCKER’
 	Curl -fsSL https://get.docker.com -o get-docker.sh
 	Sudo sh get-docker.sh &&
-	Echo ‘DONE’;
 	Sleep 2s &&
 	Clear
 }
@@ -140,9 +91,9 @@ Dx_opr() {
 Dx_services() {
 	Touch ./.stmp
 
-	Echo fail2ban >> ./.stmp
-	Echo docker >> ./.stmp
-	Echo ‘cockpit.socket’ >> ./.stmp
+	  fail2ban >> ./.stmp
+	  docker >> ./.stmp
+	 ‘cockpit.socket’ >> ./.stmp
 
 	While read -r sline; do
 		Sudo systemctl enable “$sline” &&
@@ -158,29 +109,11 @@ Dx_services() {
 	Sleep 1s &&
 	Clear;
 	Sudo service ssh restart &&
-	Echo “SSH Service Restarted…”
 
 }
 
 Dx_netdata() {
-	Echo ‘SCRIPT IS FINISHED…’
-	Echo ‘WILL ATTEMPT TO INSTALL NETDATA MONITORING WHICH IS SUPER DOPE YOU WILL DIG IT’
-	Sleep 3s
-	Echo ‘SO DOING THAT NOW…BUT IF IT FAILS WHATEVER EVERYTHING IS DONE SO…’
-	Sleep 1s
-	Echo ‘Ya Know…’
-	Sleep 2s
-	Echo ‘Know what I am sayyin…’
-	Sleep 1s
-	Echo ‘K.’
-	Sleep 1s
-	Echo ‘yeah.’
-	Sleep 1s
-	Clear
-        Echo ‘INSTALLING NETDATA – A LIGHTWEIGHT GRAPHICAL MONITORING TOOL WITH WEB UI DASHBOARD’
-        Sleep 3s &&
-        Bash <(curl -Ss https://my-netdata.io/kickstart.sh)
-}
+	
 
 Dx_update &&
 Dx_locale &&
