@@ -1,0 +1,197 @@
+
+#!/bin/bash
+
+Clear
+Echo ‘---Bootstrap Script for JC Server---’
+Sleep 3s
+Echo ‘’
+Echo ‘’
+Echo ‘’
+Echo ‘Occaisonal user input will be required – mostly your password as no sudoloop.’
+Sleep 3s
+Echo ‘|’
+Sleep 0.1s
+Echo ‘\’
+Sleep 0.1s
+Echo ‘ |’
+Sleep 0.1s
+Echo ‘ \’
+Sleep 0.1s
+Echo ‘  |’
+Sleep 0.1s
+Echo ‘  \’
+Sleep 0.1s
+Echo ‘   |’
+Sleep 0.1s
+Echo ‘   \’
+Sleep 0.1s
+Echo ‘    |’
+Sleep 0.1s
+Echo ‘    V’
+Sleep 0.6s
+Read -n 1 -s -r -p ‘    Press any key to continue…’ &&
+Clear
+
+Dx_update() {
+	Clear
+	Echo ‘-------------------------------------------’
+        Echo ‘SYNCING REPOSITORIES AND UPDATING SYSTEM…’ &&
+        Sleep 2s;
+
+        Sudo yum update
+        Sudo yum full-upgrade -y
+        Sudo yum dist-upgrade -y
+        Bincnt=$(ls -1 /usr/bin | wc -l)
+        Echo ‘ ‘
+        Echo ‘ ‘
+        Echo ‘PLEASE WAIT…’
+}
+
+Dx_locale() {
+	Clear
+	Echo ‘--------------------------’
+	Echo ‘SETTING LOCALE AND VCONSOLE’
+	Sleep 2s;
+
+	#sudo echo ‘LANG=”en_US.UTF-8”
+	#LC_MESSAGES=”C”
+	#LC_ALL=”en_US.UTF-8”’ >> /etc/environment
+
+	#echo ‘LANG=”en_US.UTF-8”’
+	#LC_MESSAGES=”C”
+	#LC_ALL=”en_US.UTF-8”’ | sudo tee -a /etc/environment
+
+	#echo “After reboot, use ‘locale’ to check”
+	Sudo cp -r /etc/ssh/sshd_config /etc/ssh/sshd_config.bak_original
+}
+
+
+Dx_pkg() {
+	Clear
+	Echo ‘----------------------------’
+	Echo ‘INSTALLING REQUIRED PACKAGES’
+	Sleep 2s
+	Sudo yum install toilet -y
+	Sudo yum install fail2ban unattended-upgrades ufw python3 python3-pip -y &&
+	Sudo yum install ufw tmux git curl zsh ncdu -y &&
+	Sudo yum install libvirt-daemon libvirt-daemon-config-network libvirt-daemon-driver-vbox -y &&
+	Sudo yum install -y qemu-kvm libvirt-daemon-system
+        Sudo wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        Sudo yum install ./google-chrome-stable_current_amd64.deb
+        Sudo systemctl enable –now libvirtd
+        Sudo yum install cockpit-ws cockpit-tests cockpit-system cockpit-storaged cockpit-pcp cockpit-packagekit cockpit-networkmanager cockpit-machines cockpit-bridge cockpit-389-ds cockpit -y &&
+        Clear
+	Sleep 1s;
+	Echo ‘INSTALLING GRAPHICAL DESKTOP ENVIRONMENT…’ &&
+	Sleep 2s &&
+	Sudo yum install tasksel -y &&
+	Sudo yum install autoconf-archive wget -y
+        Sudo yum install sddm &&
+	Sudo yum install kde-full &&
+	Sudo yum install plasma-workspace-wayland &&
+        Echo ‘DONE’;
+	Sleep 2s &&
+	Sudo systemctl set-default graphical.target &&
+	Clear
+}
+
+Dx_ufw() {
+	Clear
+	Echo ‘-----------------------------;
+	Echo ‘
+	Sudo ufw allow OpenSSH
+	Sudo ufw allow http
+	Sudo ufw allow https
+	Sudo ufw default allow outgoing
+
+}
+
+Dx_opr() {
+	Sudo useradd -m opr;
+        Sudo yum install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils ovmf
+        Sudo adduser john libvirt
+        Sudo adduser john kvm
+        Sudo mkdir -vp /var/lib/libvirt/images/hassos-vm && cd /var/lib/libvirt/images/hassos-vm
+        Sudo wget https://github.com/home-assistant/operating-system/releases/download/6.6/haos_ova
+        Sudo virsh pool-create-as –name hassos –type dir –target /var/lib/libvirt/images/hassos-vm
+        Sudo mkdir -vp /var/lib/libvirt/images/hassos-vm && cd /var/lib/libvirt/images/hassos-vm
+        Sudo wget https://github.com/home-assistant/operating-system/releases/download/6.6/haos_ova
+	Sudo usermod -aG sudo opr;
+	Sudo mkdir /home/opr/.ssh &&
+	Sudo chmod 700 /home/opr/.ssh &&
+        If [ ! -f /home/opr/.ssh/authorized_keys ];
+	Then
+		Touch /home/opr/.ssh/authorized_keys;
+	Fi
+
+	Sudo chmod -R 700 /home/opr/.ssh
+	Sudo chmod 644 /home/opr/.ssh/authorized_keys
+	Sudo chown -R opr:opr /home/opr;
+	Clear &&
+	Sleep 2s;
+        Echo ‘INSTALLING DOCKER’
+	Curl -fsSL https://get.docker.com -o get-docker.sh
+	Sudo sh get-docker.sh &&
+	Echo ‘DONE’;
+	Sleep 2s &&
+	Clear
+}
+
+Dx_services() {
+	Touch ./.stmp
+
+	Echo fail2ban >> ./.stmp
+	Echo docker >> ./.stmp
+	Echo ‘cockpit.socket’ >> ./.stmp
+
+	While read -r sline; do
+		Sudo systemctl enable “$sline” &&
+		Sudo systemctl start “$sline” &&
+		Sudo systemctl status “$sline”;
+		Echo ‘SERVICE ENABLED: ‘ “$sline”
+		Clear;
+	Done < ./.stmp
+
+	Clear;
+	Sudo ufw enable &&
+	Sudo ufw status;
+	Sleep 1s &&
+	Clear;
+	Sudo service ssh restart &&
+	Echo “SSH Service Restarted…”
+
+}
+
+Dx_netdata() {
+	Echo ‘SCRIPT IS FINISHED…’
+	Echo ‘WILL ATTEMPT TO INSTALL NETDATA MONITORING WHICH IS SUPER DOPE YOU WILL DIG IT’
+	Sleep 3s
+	Echo ‘SO DOING THAT NOW…BUT IF IT FAILS WHATEVER EVERYTHING IS DONE SO…’
+	Sleep 1s
+	Echo ‘Ya Know…’
+	Sleep 2s
+	Echo ‘Know what I am sayyin…’
+	Sleep 1s
+	Echo ‘K.’
+	Sleep 1s
+	Echo ‘yeah.’
+	Sleep 1s
+	Clear
+        Echo ‘INSTALLING NETDATA – A LIGHTWEIGHT GRAPHICAL MONITORING TOOL WITH WEB UI DASHBOARD’
+        Sleep 3s &&
+        Bash <(curl -Ss https://my-netdata.io/kickstart.sh)
+}
+
+Dx_update &&
+Dx_locale &&
+Dx_pkg &&
+Dx_ufw &&
+Dx_opr &&
+Dx_services &&
+Sudo dx_netdata;
+Clear &&
+Sleep 3s
+Toilet ‘fuck you johnny’
+
+	``
+
